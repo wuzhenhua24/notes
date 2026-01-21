@@ -36,3 +36,5 @@ sudo systemctl enable feishu-adapter
 
 # 查看状态
 sudo systemctl status feishu-adapter
+
+# 【调试利器】打印收到的完整 JSON，你可以通过 journalctl -u feishu-adapter -f 查看
