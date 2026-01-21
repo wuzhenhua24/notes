@@ -21,6 +21,9 @@ WorkingDirectory=/opt/feishu-adapter
 # 使用 gunicorn 启动服务，监听 5000 端口
 ExecStart=/opt/feishu-adapter/venv/bin/gunicorn -w 4 -b 0.0.0.0:5000 app:app
 Restart=always
+# 默认日志进 systemd journal；如需落文件可加：
+# StandardOutput=append:/var/log/feishu-adapter.log
+# StandardError=append:/var/log/feishu-adapter.err
 
 [Install]
 WantedBy=multi-user.target
@@ -38,3 +41,16 @@ sudo systemctl enable feishu-adapter
 sudo systemctl status feishu-adapter
 
 # 【调试利器】打印收到的完整 JSON，你可以通过 journalctl -u feishu-adapter -f 查看
+# 如果配置了 StandardOutput/StandardError，日志会落到对应文件
+
+# 常用排查命令
+# 最近 100 行
+journalctl -u feishu-adapter -n 100 --no-pager
+# 最近 1 小时
+journalctl -u feishu-adapter --since "1 hour ago" --no-pager
+# 指定时间范围
+journalctl -u feishu-adapter --since "2025-01-01 10:00" --until "2025-01-01 12:00" --no-pager
+# 使用 ISO 时间格式输出
+journalctl -u feishu-adapter -o short-iso --no-pager
+# 按关键字过滤（大小写不敏感）
+journalctl -u feishu-adapter --no-pager | grep -i "error"
